@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { PRICING } from "@/lib/constants";
 
 export async function POST(request: Request) {
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
   let customerId = dbUser?.stripe_customer_id;
 
   if (!customerId) {
-    const customer = await stripe.customers.create({
+    const customer = await getStripe().customers.create({
       email: dbUser?.email || user.email,
       name: dbUser?.full_name || undefined,
       metadata: { supabase_user_id: user.id },
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
 
   const pricing = type === "featured_gig" ? PRICING.FEATURED_GIG : PRICING.PREMIUM_PROFILE;
 
-  const session = await stripe.checkout.sessions.create({
+  const session = await getStripe().checkout.sessions.create({
     customer: customerId,
     mode: "payment",
     line_items: [
