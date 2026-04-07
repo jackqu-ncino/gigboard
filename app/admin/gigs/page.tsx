@@ -46,6 +46,9 @@ export default async function AdminGigsPage() {
                 Status
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                Featured
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Actions
               </th>
             </tr>
@@ -73,6 +76,15 @@ export default async function AdminGigsPage() {
                   >
                     {gig.status}
                   </span>
+                </td>
+                <td className="px-4 py-3 text-sm">
+                  {gig.is_featured ? (
+                    <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-700">
+                      Featured
+                    </span>
+                  ) : (
+                    <span className="text-gray-400">-</span>
+                  )}
                 </td>
                 <td className="px-4 py-3 text-sm">
                   <Link

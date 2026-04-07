@@ -18,6 +18,8 @@ export default async function AdminDashboardPage() {
     { count: filledGigs },
     { count: totalApplications },
     { count: pendingApplications },
+    { count: featuredGigs },
+    { count: premiumUsers },
   ] = await Promise.all([
     supabase.from("users").select("*", { count: "exact", head: true }),
     supabase.from("profiles").select("*", { count: "exact", head: true }),
@@ -41,6 +43,14 @@ export default async function AdminDashboardPage() {
       .from("applications")
       .select("*", { count: "exact", head: true })
       .eq("status", "pending"),
+    supabase
+      .from("gigs")
+      .select("*", { count: "exact", head: true })
+      .eq("is_featured", true),
+    supabase
+      .from("users")
+      .select("*", { count: "exact", head: true })
+      .eq("is_premium", true),
   ]);
 
   // Recent activity
@@ -83,6 +93,20 @@ export default async function AdminDashboardPage() {
       sub: `${totalApplications || 0} total`,
       href: "/admin/applications",
       color: "text-amber-600",
+    },
+    {
+      label: "Featured Gigs",
+      value: featuredGigs || 0,
+      sub: "paid featured listings",
+      href: "/admin/gigs",
+      color: "text-amber-500",
+    },
+    {
+      label: "Premium Users",
+      value: premiumUsers || 0,
+      sub: "paid premium profiles",
+      href: "/admin/profiles",
+      color: "text-purple-600",
     },
   ];
 

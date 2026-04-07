@@ -4,6 +4,8 @@ import Link from "next/link";
 import { formatDate, formatTime, formatCurrency } from "@/lib/utils";
 import { ApplyButton } from "@/components/applications/ApplyButton";
 import { ApplicantsList } from "@/components/applications/ApplicantsList";
+import { UpgradeButton } from "@/components/upgrade/UpgradeButton";
+import { PRICING } from "@/lib/constants";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -81,7 +83,18 @@ export default async function GigDetailPage({
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="rounded-lg bg-white p-6 shadow-sm">
+      <div className={`rounded-lg p-6 shadow-sm ${
+        gig.is_featured ? "bg-amber-50 border-2 border-amber-300" : "bg-white"
+      }`}>
+        {/* Featured badge */}
+        {gig.is_featured && (
+          <div className="mb-4 flex items-center gap-2">
+            <span className="rounded-full bg-amber-200 px-3 py-1 text-xs font-bold text-amber-800">
+              Featured Gig
+            </span>
+          </div>
+        )}
+
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
@@ -235,6 +248,27 @@ export default async function GigDetailPage({
             ) : (
               <ApplyButton gigId={id} />
             )}
+          </div>
+        )}
+
+        {/* Feature this Gig (for gig owner) */}
+        {isOwner && !gig.is_featured && gig.status === "open" && (
+          <div className="mt-6 border-t pt-6">
+            <div className="rounded-lg bg-amber-50 border border-amber-200 p-4">
+              <h3 className="font-semibold text-amber-900">Boost this gig</h3>
+              <p className="mt-1 text-sm text-amber-700">
+                Featured gigs get a highlighted badge, priority placement in search results, and more visibility from musicians.
+              </p>
+              <div className="mt-3">
+                <UpgradeButton
+                  type="featured_gig"
+                  gigId={id}
+                  label={`Feature for ${PRICING.FEATURED_GIG.label}`}
+                  description={PRICING.FEATURED_GIG.description}
+                  className="bg-amber-500 text-white hover:bg-amber-600"
+                />
+              </div>
+            </div>
           </div>
         )}
 

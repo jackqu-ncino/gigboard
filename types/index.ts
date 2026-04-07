@@ -21,6 +21,9 @@ export interface User {
   avatar_url: string | null;
   is_active: boolean;
   is_admin: boolean;
+  is_premium: boolean;
+  premium_until: string | null;
+  stripe_customer_id: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -68,6 +71,8 @@ export interface Gig {
   budget: number | null;
   musicians_needed: number;
   status: GigStatus;
+  is_featured: boolean;
+  featured_until: string | null;
   created_at: string;
   updated_at: string;
 }

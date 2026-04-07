@@ -15,6 +15,7 @@ interface GigCardProps {
   genres: { name: string }[];
   postedBy: string;
   isMatch?: boolean;
+  isFeatured?: boolean;
 }
 
 const statusColors: Record<GigStatus, string> = {
@@ -36,15 +37,25 @@ export function GigCard({
   genres,
   postedBy,
   isMatch,
+  isFeatured,
 }: GigCardProps) {
   return (
     <Link
       href={`/gigs/${id}`}
-      className="block rounded-lg bg-white p-5 shadow-sm hover:shadow-md transition-shadow"
+      className={`block rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow ${
+        isFeatured
+          ? "bg-amber-50 border-2 border-amber-300 ring-1 ring-amber-200"
+          : "bg-white"
+      }`}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
+            {isFeatured && (
+              <span className="shrink-0 rounded-full bg-amber-200 px-2 py-0.5 text-xs font-bold text-amber-800">
+                Featured
+              </span>
+            )}
             <h3 className="font-semibold text-gray-900 truncate">{title}</h3>
             {isMatch && (
               <span className="shrink-0 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">

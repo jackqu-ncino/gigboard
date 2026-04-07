@@ -35,6 +35,9 @@ export default async function BrowseGigsPage({
     query = query.gte("budget", parseFloat(params.budgetMin));
   }
 
+  // Always show featured gigs first
+  query = query.order("is_featured", { ascending: false, nullsFirst: false });
+
   // Apply sort
   const sort = params.sort || "newest";
   if (sort === "soonest") {
@@ -152,6 +155,7 @@ export default async function BrowseGigsPage({
                     }
                     postedBy={gig.users?.full_name || "Unknown"}
                     isMatch={isMatch}
+                    isFeatured={gig.is_featured}
                   />
                 );
               })}

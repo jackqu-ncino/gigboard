@@ -17,13 +17,20 @@ export default async function BrowseMusiciansPage({
   const { data: profiles } = await supabase
     .from("profiles")
     .select(
-      "*, users!profiles_user_id_fkey(id, full_name, avatar_url, email), profile_instruments(instrument_id, instruments(id, name, slug, created_at)), profile_genres(genre_id, genres(id, name, slug, created_at))"
+      "*, users!profiles_user_id_fkey(id, full_name, avatar_url, email, is_premium, premium_until), profile_instruments(instrument_id, instruments(id, name, slug, created_at)), profile_genres(genre_id, genres(id, name, slug, created_at))"
     )
     .eq("is_published", true)
     .order("updated_at", { ascending: false })
     .limit(50);
 
-  let filteredProfiles = profiles || [];
+  // Sort premium profiles first
+  let filteredProfiles = (profiles || []).sort((a: any, b: any) => {
+    const aPremium = a.users?.is_premium && (!a.users.premium_until || new Date(a.users.premium_until) > new Date());
+    const bPremium = b.users?.is_premium && (!b.users.premium_until || new Date(b.users.premium_until) > new Date());
+    if (aPremium && !bPremium) return -1;
+    if (!aPremium && bPremium) return 1;
+    return 0;
+  });
 
   // Filter by instrument
   if (params.instrument) {
@@ -78,6 +85,11 @@ export default async function BrowseMusiciansPage({
                 }
                 genres={
                   profile.profile_genres?.map((pg: any) => pg.genres) || []
+                }
+                isPremium={
+                  profile.users?.is_premium &&
+                  (!profile.users.premium_until ||
+                    new Date(profile.users.premium_until) > new Date())
                 }
               />
             ))}

@@ -13,6 +13,7 @@ export function AdminGigForm({ gig }: { gig: Gig }) {
   const [musiciansNeeded, setMusiciansNeeded] = useState(
     gig.musicians_needed.toString()
   );
+  const [isFeatured, setIsFeatured] = useState(gig.is_featured);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [showDelete, setShowDelete] = useState(false);
@@ -31,6 +32,12 @@ export function AdminGigForm({ gig }: { gig: Gig }) {
         status,
         budget: budget ? parseFloat(budget) : null,
         musicians_needed: parseInt(musiciansNeeded) || 1,
+        is_featured: isFeatured,
+        featured_until: isFeatured && !gig.is_featured
+          ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+          : isFeatured
+          ? gig.featured_until
+          : null,
       })
       .eq("id", gig.id);
 
@@ -121,6 +128,27 @@ export function AdminGigForm({ gig }: { gig: Gig }) {
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </div>
+      </div>
+
+      <div className="flex items-center gap-3 rounded-md bg-amber-50 border border-amber-200 p-3">
+        <input
+          type="checkbox"
+          id="is_featured"
+          checked={isFeatured}
+          onChange={(e) => setIsFeatured(e.target.checked)}
+          className="h-4 w-4 rounded border-gray-300 text-amber-600 focus:ring-amber-500"
+        />
+        <label htmlFor="is_featured" className="text-sm">
+          <span className="font-medium text-amber-900">Featured Gig</span>
+          <span className="block text-xs text-amber-700">
+            Highlighted with a badge and shown at the top of search results
+          </span>
+          {gig.featured_until && gig.is_featured && (
+            <span className="block text-xs text-amber-600 mt-0.5">
+              Expires: {new Date(gig.featured_until).toLocaleDateString()}
+            </span>
+          )}
+        </label>
       </div>
 
       <div className="flex items-center justify-between pt-2">

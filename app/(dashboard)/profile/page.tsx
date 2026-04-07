@@ -1,5 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
+import { UpgradeButton } from "@/components/upgrade/UpgradeButton";
+import { PRICING } from "@/lib/constants";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -52,9 +54,14 @@ export default async function ProfilePage() {
 
   const { data: userData } = await supabase
     .from("users")
-    .select("full_name, email, avatar_url")
+    .select("full_name, email, avatar_url, is_premium, premium_until")
     .eq("id", user!.id)
     .single();
+
+  const isPremiumActive =
+    userData?.is_premium &&
+    (!userData.premium_until ||
+      new Date(userData.premium_until) > new Date());
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -81,15 +88,22 @@ export default async function ProfilePage() {
               {userData?.full_name}
             </h2>
             <p className="text-sm text-gray-500">{userData?.email}</p>
-            <span
-              className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
-                profile.is_published
-                  ? "bg-green-100 text-green-700"
-                  : "bg-gray-100 text-gray-600"
-              }`}
-            >
-              {profile.is_published ? "Published" : "Hidden"}
-            </span>
+            <div className="mt-1 flex items-center gap-2">
+              <span
+                className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
+                  profile.is_published
+                    ? "bg-green-100 text-green-700"
+                    : "bg-gray-100 text-gray-600"
+                }`}
+              >
+                {profile.is_published ? "Published" : "Hidden"}
+              </span>
+              {isPremiumActive && (
+                <span className="inline-block rounded-full bg-purple-200 px-2 py-0.5 text-xs font-bold text-purple-800">
+                  Premium
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
@@ -171,6 +185,41 @@ export default async function ProfilePage() {
           )}
         </div>
       </div>
+
+      {/* Premium upgrade CTA */}
+      {!isPremiumActive && (
+        <div className="mt-6 rounded-lg bg-purple-50 border border-purple-200 p-6 shadow-sm">
+          <h3 className="text-lg font-semibold text-purple-900">
+            Go Premium
+          </h3>
+          <p className="mt-1 text-sm text-purple-700">
+            Stand out from the crowd with a Premium profile. Get a verified badge, priority placement in musician search results, and a highlighted profile card.
+          </p>
+          <div className="mt-4">
+            <UpgradeButton
+              type="premium_profile"
+              label={`Upgrade for ${PRICING.PREMIUM_PROFILE.label}`}
+              description={PRICING.PREMIUM_PROFILE.description}
+              className="bg-purple-600 text-white hover:bg-purple-700"
+            />
+          </div>
+        </div>
+      )}
+
+      {isPremiumActive && userData?.premium_until && (
+        <div className="mt-6 rounded-lg bg-purple-50 border border-purple-200 p-4 shadow-sm">
+          <p className="text-sm text-purple-700">
+            Your Premium profile is active until{" "}
+            <strong>
+              {new Date(userData.premium_until).toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </strong>
+          </p>
+        </div>
+      )}
     </div>
   );
 }

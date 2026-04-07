@@ -27,3 +27,19 @@ export const APPLICATION_STATUSES = [
   { value: "rejected", label: "Rejected" },
   { value: "withdrawn", label: "Withdrawn" },
 ] as const;
+
+// Monetization pricing
+export const PRICING = {
+  FEATURED_GIG: {
+    amount: 999, // cents
+    label: "$9.99",
+    duration_days: 30,
+    description: "Feature your gig for 30 days",
+  },
+  PREMIUM_PROFILE: {
+    amount: 999, // cents
+    label: "$9.99/month",
+    duration_days: 30,
+    description: "Premium musician profile for 30 days",
+  },
+} as const;

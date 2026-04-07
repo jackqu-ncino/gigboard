@@ -12,7 +12,7 @@ export default async function AdminProfilesPage() {
   const { data: profiles } = await supabase
     .from("profiles")
     .select(
-      "*, users!profiles_user_id_fkey(full_name, email)"
+      "*, users!profiles_user_id_fkey(full_name, email, is_premium, premium_until)"
     )
     .order("updated_at", { ascending: false });
 
@@ -40,6 +40,9 @@ export default async function AdminProfilesPage() {
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Published
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                Premium
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Actions
@@ -74,6 +77,22 @@ export default async function AdminProfilesPage() {
                   >
                     {profile.is_published ? "Yes" : "No"}
                   </span>
+                </td>
+                <td className="px-4 py-3 text-sm">
+                  {profile.users?.is_premium ? (
+                    <div>
+                      <span className="rounded-full bg-purple-100 px-2 py-0.5 text-xs font-bold text-purple-700">
+                        Premium
+                      </span>
+                      {profile.users.premium_until && (
+                        <p className="mt-0.5 text-xs text-gray-400">
+                          Until {new Date(profile.users.premium_until).toLocaleDateString()}
+                        </p>
+                      )}
+                    </div>
+                  ) : (
+                    <span className="text-gray-400">-</span>
+                  )}
                 </td>
                 <td className="px-4 py-3 text-sm">
                   <Link

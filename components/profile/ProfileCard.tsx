@@ -14,6 +14,7 @@ interface ProfileCardProps {
   rateMax: number | null;
   instruments: Instrument[];
   genres: Genre[];
+  isPremium?: boolean;
 }
 
 export function ProfileCard({
@@ -27,20 +28,34 @@ export function ProfileCard({
   rateMax,
   instruments,
   genres,
+  isPremium,
 }: ProfileCardProps) {
   return (
     <Link
       href={`/musicians/${userId}`}
-      className="block rounded-lg bg-white p-5 shadow-sm hover:shadow-md transition-shadow"
+      className={`block rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow ${
+        isPremium
+          ? "bg-purple-50 border-2 border-purple-300 ring-1 ring-purple-200"
+          : "bg-white"
+      }`}
     >
       <div className="flex items-start gap-4">
-        <div className="h-12 w-12 shrink-0 rounded-full bg-primary/10 flex items-center justify-center">
-          <span className="text-lg font-semibold text-primary">
+        <div className={`h-12 w-12 shrink-0 rounded-full flex items-center justify-center ${
+          isPremium ? "bg-purple-100 ring-2 ring-purple-300" : "bg-primary/10"
+        }`}>
+          <span className={`text-lg font-semibold ${isPremium ? "text-purple-700" : "text-primary"}`}>
             {fullName.charAt(0).toUpperCase()}
           </span>
         </div>
         <div className="min-w-0 flex-1">
-          <h3 className="font-semibold text-gray-900">{fullName}</h3>
+          <div className="flex items-center gap-2">
+            <h3 className="font-semibold text-gray-900">{fullName}</h3>
+            {isPremium && (
+              <span className="shrink-0 rounded-full bg-purple-200 px-2 py-0.5 text-xs font-bold text-purple-800">
+                Premium
+              </span>
+            )}
+          </div>
           <p className="text-sm text-gray-500 capitalize">{experience}</p>
           {(city || state) && (
             <p className="text-sm text-gray-500">
