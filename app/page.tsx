@@ -234,12 +234,12 @@ export default async function HomePage() {
                         {genreGigs.length !== 1 ? "s" : ""}
                       </span>
                     </div>
-                    <div className="flex gap-4 overflow-x-auto pb-2 -mx-4 px-4 snap-x">
-                      {genreGigs.slice(0, 6).map((gig: any) => (
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      {genreGigs.slice(0, 3).map((gig: any) => (
                         <Link
                           key={gig.id}
                           href={`/gigs/${gig.id}`}
-                          className={`min-w-[280px] max-w-[320px] shrink-0 snap-start rounded-lg border p-4 shadow-sm hover:shadow-md transition-shadow ${
+                          className={`rounded-lg border p-4 shadow-sm hover:shadow-md transition-shadow ${
                             gig.is_featured
                               ? "bg-amber-50 border-2 border-amber-300 ring-1 ring-amber-200"
                               : "border-gray-200 bg-white"
