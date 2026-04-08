@@ -87,9 +87,10 @@ export default async function HomePage() {
   const { data: gigs } = await supabase
     .from("gigs")
     .select(
-      "id, title, gig_date, city, state, budget, musicians_needed, status, gig_instruments(instrument_id, instruments(name)), gig_genres(genre_id, genres(id, name))"
+      "id, title, gig_date, city, state, budget, musicians_needed, status, is_featured, gig_instruments(instrument_id, instruments(name)), gig_genres(genre_id, genres(id, name))"
     )
     .eq("status", "open")
+    .order("is_featured", { ascending: false, nullsFirst: false })
     .order("created_at", { ascending: false })
     .limit(50);
 
@@ -238,8 +239,17 @@ export default async function HomePage() {
                         <Link
                           key={gig.id}
                           href={`/gigs/${gig.id}`}
-                          className="min-w-[280px] max-w-[320px] shrink-0 snap-start rounded-lg border border-gray-200 bg-white p-4 shadow-sm hover:shadow-md transition-shadow"
+                          className={`min-w-[280px] max-w-[320px] shrink-0 snap-start rounded-lg border p-4 shadow-sm hover:shadow-md transition-shadow ${
+                            gig.is_featured
+                              ? "bg-amber-50 border-2 border-amber-300 ring-1 ring-amber-200"
+                              : "border-gray-200 bg-white"
+                          }`}
                         >
+                          {gig.is_featured && (
+                            <span className="mb-2 inline-block rounded-full bg-amber-200 px-2 py-0.5 text-xs font-bold text-amber-800">
+                              Featured
+                            </span>
+                          )}
                           <h4 className="font-semibold text-gray-900 truncate">
                             {gig.title}
                           </h4>
