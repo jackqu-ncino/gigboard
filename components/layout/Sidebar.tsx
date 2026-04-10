@@ -16,7 +16,7 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
 
   return (
     <aside className="hidden w-64 shrink-0 border-r border-gray-200 bg-white lg:flex lg:flex-col">
@@ -52,13 +52,12 @@ export function Sidebar() {
           </>
         )}
         <hr className="my-2 border-gray-200" />
-        <button
-          type="button"
-          onClick={() => signOut()}
-          className="w-full rounded-md px-3 py-2 text-left text-sm font-medium text-gray-500 hover:bg-gray-100 transition-colors cursor-pointer"
+        <a
+          href="/auth/signout"
+          className="block rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 transition-colors"
         >
           Sign Out
-        </button>
+        </a>
       </nav>
     </aside>
   );

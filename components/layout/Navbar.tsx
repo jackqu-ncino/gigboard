@@ -18,7 +18,7 @@ const navItems = [
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { user, loading, signOut } = useAuth();
+  const { user, loading } = useAuth();
   const pathname = usePathname();
 
   return (
@@ -58,12 +58,12 @@ export function Navbar() {
                   Admin
                 </Link>
               )}
-              <button
-                onClick={signOut}
+              <a
+                href="/auth/signout"
                 className="text-sm text-gray-500 hover:text-gray-700"
               >
                 Sign Out
-              </button>
+              </a>
             </>
           ) : (
             <>
@@ -152,15 +152,12 @@ export function Navbar() {
                 </>
               )}
               <hr className="my-1 border-gray-200" />
-              <button
-                onClick={() => {
-                  setMobileOpen(false);
-                  signOut();
-                }}
-                className="rounded-md px-3 py-2.5 text-left text-sm font-medium text-gray-500 hover:bg-gray-100"
+              <a
+                href="/auth/signout"
+                className="block rounded-md px-3 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100"
               >
                 Sign Out
-              </button>
+              </a>
             </div>
           ) : (
             <div className="flex flex-col gap-2 pt-2">
