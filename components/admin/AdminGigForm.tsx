@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
 import { GIG_STATUSES } from "@/lib/constants";
+import { updateGig, deleteGig } from "@/app/admin/gigs/actions";
 import type { Gig, GigStatus } from "@/types";
 
 export function AdminGigForm({ gig }: { gig: Gig }) {
@@ -18,31 +18,27 @@ export function AdminGigForm({ gig }: { gig: Gig }) {
   const [message, setMessage] = useState("");
   const [showDelete, setShowDelete] = useState(false);
   const router = useRouter();
-  const supabase = createClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
 
-    const { error } = await supabase
-      .from("gigs")
-      .update({
-        title,
-        status,
-        budget: budget ? parseFloat(budget) : null,
-        musicians_needed: parseInt(musiciansNeeded) || 1,
-        is_featured: isFeatured,
-        featured_until: isFeatured && !gig.is_featured
-          ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-          : isFeatured
-          ? gig.featured_until
-          : null,
-      })
-      .eq("id", gig.id);
+    const result = await updateGig(gig.id, {
+      title,
+      status,
+      budget: budget ? parseFloat(budget) : null,
+      musicians_needed: parseInt(musiciansNeeded) || 1,
+      is_featured: isFeatured,
+      featured_until: isFeatured && !gig.is_featured
+        ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+        : isFeatured
+        ? gig.featured_until
+        : null,
+    });
 
-    if (error) {
-      setMessage(`Error: ${error.message}`);
+    if (result.error) {
+      setMessage(`Error: ${result.error}`);
     } else {
       setMessage("Gig updated successfully.");
     }
@@ -52,9 +48,9 @@ export function AdminGigForm({ gig }: { gig: Gig }) {
 
   const handleDelete = async () => {
     setLoading(true);
-    const { error } = await supabase.from("gigs").delete().eq("id", gig.id);
-    if (error) {
-      setMessage(`Error: ${error.message}`);
+    const result = await deleteGig(gig.id);
+    if (result.error) {
+      setMessage(`Error: ${result.error}`);
       setLoading(false);
     } else {
       router.push("/admin/gigs");

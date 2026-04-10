@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
 import { USER_ROLES } from "@/lib/constants";
+import { updateUser } from "@/app/admin/users/actions";
 import type { User, UserRole } from "@/types";
 
 export function AdminUserForm({ user }: { user: User }) {
@@ -14,25 +14,21 @@ export function AdminUserForm({ user }: { user: User }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const router = useRouter();
-  const supabase = createClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
 
-    const { error } = await supabase
-      .from("users")
-      .update({
-        full_name: fullName,
-        role,
-        is_active: isActive,
-        is_admin: isAdmin,
-      })
-      .eq("id", user.id);
+    const result = await updateUser(user.id, {
+      full_name: fullName,
+      role,
+      is_active: isActive,
+      is_admin: isAdmin,
+    });
 
-    if (error) {
-      setMessage(`Error: ${error.message}`);
+    if (result.error) {
+      setMessage(`Error: ${result.error}`);
     } else {
       setMessage("User updated successfully.");
     }
