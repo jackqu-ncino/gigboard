@@ -53,8 +53,9 @@ export function Sidebar() {
         )}
         <hr className="my-2 border-gray-200" />
         <button
-          onClick={signOut}
-          className="w-full rounded-md px-3 py-2 text-left text-sm font-medium text-gray-500 hover:bg-gray-100 transition-colors"
+          type="button"
+          onClick={() => signOut()}
+          className="w-full rounded-md px-3 py-2 text-left text-sm font-medium text-gray-500 hover:bg-gray-100 transition-colors cursor-pointer"
         >
           Sign Out
         </button>

@@ -59,11 +59,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [supabase]);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch {
+      // sign out even if the API call fails
+    }
     setUser(null);
     setSession(null);
     setSupabaseUser(null);
-    window.location.href = "/";
+    window.location.replace("/");
   };
 
   return (
