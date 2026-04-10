@@ -20,7 +20,7 @@ export function Sidebar() {
 
   return (
     <aside className="hidden w-64 shrink-0 border-r border-gray-200 bg-white lg:flex lg:flex-col">
-      <nav className="flex flex-1 flex-col gap-1 p-4">
+      <nav className="flex flex-col gap-1 p-4">
         {navItems.map((item) => (
           <Link
             key={item.href}
@@ -51,14 +51,13 @@ export function Sidebar() {
             </Link>
           </>
         )}
-        <div className="mt-auto pt-4 border-t border-gray-200">
-          <button
-            onClick={signOut}
-            className="w-full rounded-md px-3 py-2 text-left text-sm font-medium text-gray-500 hover:bg-gray-100 transition-colors"
-          >
-            Sign Out
-          </button>
-        </div>
+        <hr className="my-2 border-gray-200" />
+        <button
+          onClick={signOut}
+          className="w-full rounded-md px-3 py-2 text-left text-sm font-medium text-gray-500 hover:bg-gray-100 transition-colors"
+        >
+          Sign Out
+        </button>
       </nav>
     </aside>
   );
