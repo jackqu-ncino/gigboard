@@ -63,6 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setSession(null);
     setSupabaseUser(null);
+    window.location.href = "/";
   };
 
   return (
